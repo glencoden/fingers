@@ -4,8 +4,6 @@ function pollDomElements() {
     const numMistakesElement = document.querySelector('.num-mistakes');
     const taskLengthInput = document.querySelector('.task-length');
 
-    console.log('poll elements', taskElement, numMakesElement, numMistakesElement, taskLengthInput);// TODO remove dev code
-
     if (taskElement === null || numMakesElement === null || numMistakesElement === null || taskLengthInput === null) {
         setTimeout(pollDomElements, 200);
         return;
@@ -20,8 +18,7 @@ function runScript(taskElement, numMakesElement, numMistakesElement, taskLengthI
     const INITIAL_TASK_LENGTH = 1;
     const MAX_TASK_LENGTH = 12;
 
-// TODO: add Umlaute
-    const tasks = [ '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace', 'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', 'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', `'`, 'Enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'ArrowUp', 'Control', 'Alt', 'Meta', ' ', 'ArrowLeft', 'ArrowDown', 'ArrowRight', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?' ];
+    const tasks = [ '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace', 'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', `'`, 'Enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'ArrowUp', 'Control', 'Alt', 'Meta', ' ', 'ArrowLeft', 'ArrowDown', 'ArrowRight', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?' ];
 
     const currentTasks = [];
 
@@ -68,7 +65,7 @@ function runScript(taskElement, numMakesElement, numMistakesElement, taskLengthI
     taskLengthInput.addEventListener('change', onTaskLengthChange);
 
     function onUserInputKeydown(event) {
-        console.log('user input', event);// TODO remove dev code
+        event.preventDefault();
         if (currentTasks.length === 0) {
             resetTasks();
             return;
