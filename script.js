@@ -4,6 +4,8 @@ function pollDomElements() {
     const numMistakesElement = document.querySelector('.num-mistakes');
     const taskLengthInput = document.querySelector('.task-length');
 
+    console.log('poll elements', taskElement, numMakesElement, numMistakesElement, taskLengthInput);// TODO remove dev code
+
     if (taskElement === null || numMakesElement === null || numMistakesElement === null || taskLengthInput === null) {
         setTimeout(pollDomElements, 200);
         return;
@@ -65,7 +67,8 @@ function runScript(taskElement, numMakesElement, numMistakesElement, taskLengthI
 
     taskLengthInput.addEventListener('change', onTaskLengthChange);
 
-    function onUserInputKeyup(event) {
+    function onUserInputKeydown(event) {
+        console.log('user input', event);// TODO remove dev code
         if (currentTasks.length === 0) {
             resetTasks();
             return;
@@ -80,7 +83,7 @@ function runScript(taskElement, numMakesElement, numMistakesElement, taskLengthI
         onMake();
     }
 
-    document.addEventListener('keydown', onUserInputKeyup);
+    document.addEventListener('keydown', onUserInputKeydown);
 
     resetTaskLength();
     resetTasks();
