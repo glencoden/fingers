@@ -27,19 +27,20 @@ body {
 
 /* left top */
 
+.title {
+    position: absolute;
+    left: var(--padding);
+    top: var(--padding);
+    font-size: 48px;
+    color: var(--secondary-color);
+}
+
 .makes {
     position: absolute;
     left: var(--padding);
     top: 10%;
     width: 90%;
     color: var(--secondary-color);
-}
-
-.title {
-    position: absolute;
-    left: var(--padding);
-    top: var(--padding);
-    color: var(--primary-color);
 }
 
 /* right top */
