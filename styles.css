@@ -1,8 +1,9 @@
 :root {
-    --primary-color: white;
+    --primary-color: floralwhite;
     --secondary-color: grey;
+    --title-color: darkgoldenrod;
     --warn-color: red;
-    --bg-color: black;
+    --bg-color: #101010;
     --padding: 5%;
     --font-size-l: 48px;
 }
@@ -33,7 +34,7 @@ body {
     left: var(--padding);
     top: var(--padding);
     font-size: var(--font-size-l);
-    color: var(--secondary-color);
+    color: var(--title-color);
 }
 
 .makes {
