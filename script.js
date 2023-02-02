@@ -1,4 +1,4 @@
-const tasks = [
+const chars = [
     { value: '`', weight: 2 },
     { value: '1', weight: 2 },
     { value: '2', weight: 2 },
@@ -22,7 +22,7 @@ const tasks = [
     { value: 'y', weight: 1 },
     { value: 'u', weight: 1 },
     { value: 'i', weight: 1 },
-    { value: 'o', weight: 1 },
+    { value: 'o', weight: 0 },
     { value: 'p', weight: 1 },
     { value: '[', weight: 2 },
     { value: ']', weight: 2 },
@@ -112,6 +112,7 @@ function pollDomElements() {
     const numMakesElement = document.querySelector('.num-makes');
     const numMistakesElement = document.querySelector('.num-mistakes');
     const taskLengthInput = document.querySelector('.task-length');
+    const numbersOnlyInput = document.querySelector('.numbers-only');
     const averageKeyTimeElement = document.querySelector('.average-key-time');
 
     if (taskElement === null || makesElement === null || numMakesElement === null || numMistakesElement === null || taskLengthInput === null || averageKeyTimeElement === null) {
@@ -119,12 +120,12 @@ function pollDomElements() {
         return;
     }
 
-    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, averageKeyTimeElement);
+    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, numbersOnlyInput, averageKeyTimeElement);
 }
 
 pollDomElements();
 
-function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, averageKeyTimeElement) {
+function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, numbersOnlyInput, averageKeyTimeElement) {
     const INITIAL_TASK_LENGTH = 1;
     const MAX_TASK_LENGTH = 12;
 
@@ -175,9 +176,11 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
     function resetTasks() {
         for (let i = 0; i < taskLengthInput.value; i++) {
             const pickList = [];
-            tasks.forEach(task => {
+            chars.forEach(task => {
                 for (let i = 0; i < task.weight; i++) {
-                    pickList.push(task.value);
+                    if (!numbersOnlyInput.checked || !Number.isNaN(parseInt(task.value))) {
+                        pickList.push(task.value);
+                    }
                 }
             });
             const randomTaskIndex = Math.floor(Math.random() * pickList.length);
