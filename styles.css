@@ -4,6 +4,7 @@
     --warn-color: red;
     --bg-color: black;
     --padding: 5%;
+    --font-size-l: 48px;
 }
 
 body {
@@ -31,14 +32,14 @@ body {
     position: absolute;
     left: var(--padding);
     top: var(--padding);
-    font-size: 48px;
+    font-size: var(--font-size-l);
     color: var(--secondary-color);
 }
 
 .makes {
     position: absolute;
     left: var(--padding);
-    top: 10%;
+    top: calc(2 * var(--padding) + var(--font-size-l));
     width: 90%;
     color: var(--secondary-color);
 }
