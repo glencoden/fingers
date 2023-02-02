@@ -11,7 +11,7 @@
 body {
     position: relative;
     height: 100vh;
-    font-family: Georgia, serif;
+    font-family: Arial, serif;
     background-color: var(--bg-color);
 }
 

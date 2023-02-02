@@ -22,7 +22,7 @@ const chars = [
     { value: 'y', weight: 1 },
     { value: 'u', weight: 1 },
     { value: 'i', weight: 1 },
-    { value: 'o', weight: 0 },
+    { value: 'o', weight: 1 },
     { value: 'p', weight: 1 },
     { value: '[', weight: 2 },
     { value: ']', weight: 2 },
