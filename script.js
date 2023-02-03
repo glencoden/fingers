@@ -35,7 +35,7 @@ const chars = [
     { value: 'h', weight: 1 },
     { value: 'j', weight: 1 },
     { value: 'k', weight: 1 },
-    { value: 'l', weight: 1 },
+    { value: 'l', weight: 0 },
     { value: ';', weight: 1 },
     { value: `'`, weight: 1 },
     { value: 'Enter', weight: 1 },
