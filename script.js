@@ -1,4 +1,4 @@
-const chars = [
+const CHARS = [
     { value: '`', weight: 2 },
     { value: '1', weight: 2 },
     { value: '2', weight: 2 },
@@ -106,13 +106,19 @@ const chars = [
     { value: '?', weight: 1 },
 ];
 
+const MIN_TASK_LENGTH = 1;
+const MAX_TASK_LENGTH = 12;
+
+const RANDOM_NUMBER_INPUT_CHANCE = 1 / 4;
+
 function pollDomElements() {
     const taskElement = document.querySelector('.task');
     const makesElement = document.querySelector('.makes');
     const numMakesElement = document.querySelector('.num-makes');
     const numMistakesElement = document.querySelector('.num-mistakes');
     const taskLengthInput = document.querySelector('.task-length');
-    const numbersOnlyInput = document.querySelector('.numbers-only');
+    const isNumbersOnlyInput = document.querySelector('.numbers-only');
+    const isRandomInput = document.querySelector('.random');
     const averageKeyTimeElement = document.querySelector('.average-key-time');
 
     if (taskElement === null || makesElement === null || numMakesElement === null || numMistakesElement === null || taskLengthInput === null || averageKeyTimeElement === null) {
@@ -120,15 +126,12 @@ function pollDomElements() {
         return;
     }
 
-    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, numbersOnlyInput, averageKeyTimeElement);
+    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, averageKeyTimeElement);
 }
 
 pollDomElements();
 
-function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, numbersOnlyInput, averageKeyTimeElement) {
-    const INITIAL_TASK_LENGTH = 1;
-    const MAX_TASK_LENGTH = 12;
-
+function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, averageKeyTimeElement) {
     const currentTasks = [];
     let currentMakes = [];
 
@@ -174,11 +177,19 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
     }
 
     function resetTasks() {
-        for (let i = 0; i < taskLengthInput.value; i++) {
+        const currentLength = isRandomInput.checked
+            ? Math.ceil(Math.random() * MAX_TASK_LENGTH)
+            : taskLengthInput.value;
+
+        const isNumbersOnly = isRandomInput.checked
+            ? Math.random() < RANDOM_NUMBER_INPUT_CHANCE
+            : isNumbersOnlyInput.checked;
+
+        for (let i = 0; i < currentLength; i++) {
             const pickList = [];
-            chars.forEach(task => {
+            CHARS.forEach(task => {
                 for (let i = 0; i < task.weight; i++) {
-                    if (!numbersOnlyInput.checked || !Number.isNaN(parseInt(task.value))) {
+                    if (!isNumbersOnly || !Number.isNaN(parseInt(task.value))) {
                         pickList.push(task.value);
                     }
                 }
@@ -187,6 +198,7 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
             const randomKey = pickList[randomTaskIndex];
             currentTasks.push(randomKey);
         }
+
         updateUI();
     }
 
@@ -196,7 +208,7 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
     }
 
     function resetTaskLength() {
-        taskLengthInput.value = INITIAL_TASK_LENGTH;
+        taskLengthInput.value = MIN_TASK_LENGTH;
     }
 
     function onTaskLengthChange({ target }) {
