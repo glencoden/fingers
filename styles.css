@@ -52,12 +52,14 @@ body {
     position: absolute;
     right: var(--padding);
     top: var(--padding);
+    display: flex;
+    width: 550px;
 }
 
 .setup-item {
     display: flex;
     align-items: center;
-    gap: var(--padding);
+    padding: var(--padding);
 }
 
 .setup-item > p {

@@ -51,7 +51,7 @@ const CHARS = [
     { value: '/', weight: 2 },
     { value: 'ArrowUp', weight: 1 },
     { value: 'Control', weight: 2 },
-    { value: 'Alt', weight: 2 },
+    { value: 'Alt', weight: 20 },
     { value: 'Meta', weight: 2 },
     { value: ' ', weight: 0 },
     { value: 'ArrowLeft', weight: 1 },
@@ -106,6 +106,11 @@ const CHARS = [
     { value: '?', weight: 1 },
 ];
 
+const TRICKY_WORDS = [
+    '= () => {',
+    'between'
+];
+
 const MIN_TASK_LENGTH = 1;
 const MAX_TASK_LENGTH = 12;
 
@@ -119,6 +124,7 @@ function pollDomElements() {
     const taskLengthInput = document.querySelector('.task-length');
     const isNumbersOnlyInput = document.querySelector('.numbers-only');
     const isRandomInput = document.querySelector('.random');
+    const isTrickyWords = document.querySelector('.tricky-words');
     const averageKeyTimeElement = document.querySelector('.average-key-time');
 
     if (taskElement === null || makesElement === null || numMakesElement === null || numMistakesElement === null || taskLengthInput === null || averageKeyTimeElement === null) {
@@ -126,12 +132,12 @@ function pollDomElements() {
         return;
     }
 
-    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, averageKeyTimeElement);
+    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, isTrickyWords, averageKeyTimeElement);
 }
 
 pollDomElements();
 
-function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, averageKeyTimeElement) {
+function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, isTrickyWords, averageKeyTimeElement) {
     const currentTasks = [];
     let currentMakes = [];
 
@@ -143,15 +149,21 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
 
     function handleKeyTime() {
         const currentKeyDate = new Date();
+
         if (prevKeyDate === null) {
             prevKeyDate = currentKeyDate;
             return;
         }
+
         const timeSinceLastKey = currentKeyDate - prevKeyDate;
+
         keyTimes.push(timeSinceLastKey);
+
         const sumKeyTimes = keyTimes.reduce((result, time) => result + time, 0);
         const averageKeyTime = Math.round(sumKeyTimes / keyTimes.length);
+
         averageKeyTimeElement.innerHTML = `${averageKeyTime}`;
+
         prevKeyDate = currentKeyDate;
     }
 
@@ -160,10 +172,12 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
         numMakesElement.innerHTML = `${numMakes}`;
         currentTasks.shift();
         currentMakes.push(key);
+
         if (currentTasks.length === 0) {
             resetTasks();
             return;
         }
+
         updateUI();
     }
 
@@ -173,30 +187,42 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
         currentMakes = [];
         keyTimes = [];
         prevKeyDate = null;
+
         updateUI();
     }
 
     function resetTasks() {
-        const currentLength = isRandomInput.checked
-            ? Math.ceil(Math.random() * MAX_TASK_LENGTH)
-            : taskLengthInput.value;
+        let currentLength = taskLengthInput.value;
+        let isNumbersOnly = isNumbersOnlyInput.checked;
 
-        const isNumbersOnly = isRandomInput.checked
-            ? Math.random() < RANDOM_NUMBER_INPUT_CHANCE
-            : isNumbersOnlyInput.checked;
+        if (isRandomInput.checked) {
+            currentLength = Math.ceil(Math.random() * MAX_TASK_LENGTH);
+            isNumbersOnly = Math.random() < RANDOM_NUMBER_INPUT_CHANCE;
+        }
 
-        for (let i = 0; i < currentLength; i++) {
-            const pickList = [];
-            CHARS.forEach(task => {
-                for (let i = 0; i < task.weight; i++) {
-                    if (!isNumbersOnly || !Number.isNaN(parseInt(task.value))) {
-                        pickList.push(task.value);
+        if (isTrickyWords.checked) {
+            const trickyWord = TRICKY_WORDS[Math.floor(Math.random() * TRICKY_WORDS.length)];
+
+            for (let i = 0; i < trickyWord.length; i++) {
+                currentTasks.push(trickyWord[i]);
+            }
+        } else {
+            for (let i = 0; i < currentLength; i++) {
+                const pickList = [];
+
+                CHARS.forEach(task => {
+                    for (let i = 0; i < task.weight; i++) {
+                        if (!isNumbersOnly || !Number.isNaN(parseInt(task.value))) {
+                            pickList.push(task.value);
+                        }
                     }
-                }
-            });
-            const randomTaskIndex = Math.floor(Math.random() * pickList.length);
-            const randomKey = pickList[randomTaskIndex];
-            currentTasks.push(randomKey);
+                });
+
+                const randomTaskIndex = Math.floor(Math.random() * pickList.length);
+                const randomKey = pickList[randomTaskIndex];
+
+                currentTasks.push(randomKey);
+            }
         }
 
         updateUI();
@@ -219,18 +245,23 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
 
     function onUserInputKeydown(event) {
         event.preventDefault();
+
         if (currentTasks.length === 0) {
             resetTasks();
             return;
         }
+
         if (event.key === 'Shift') {
             return;
         }
+
         handleKeyTime();
+
         if (event.key !== currentTasks[0]) {
             onMistake();
             return;
         }
+
         onMake(event.key);
     }
 
@@ -244,6 +275,8 @@ function parseForSpecialLabels(key) {
     switch (key) {
         case 'Backspace':
             return 'Back';
+        case 'Alt':
+            return 'Opt';
         case 'Meta':
             return 'Cmd';
         case 'ArrowUp':

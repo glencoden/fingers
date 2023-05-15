@@ -1,39 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Fingers</title>
-    <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
-    <h2 class="makes"></h2>
+    <head>
+        <title>Fingers</title>
+        <link rel="stylesheet" href="./styles.css">
+    </head>
+    <body>
+        <h2 class="makes"></h2>
 
-    <h1 class="title">FINGERS</h1>
+        <h1 class="title">FINGERS</h1>
 
-    <div class="setup-box">
-        <div class="setup-item">
-            <p>task length</p>
-            <input type="number" class="task-length" />
+        <div class="setup-box">
+            <div class="setup-item">
+                <p>task length</p>
+                <input type="number" class="task-length" />
+            </div>
+            <div class="setup-item">
+                <p>numbers only</p>
+                <input type="checkbox" class="numbers-only" />
+            </div>
+            <div class="setup-item">
+                <p>random</p>
+                <input type="checkbox" class="random" />
+            </div>
+            <div class="setup-item">
+                <p>words</p>
+                <input type="checkbox" class="tricky-words" />
+            </div>
         </div>
-        <div class="setup-item">
-            <p>numbers only</p>
-            <input type="checkbox" class="numbers-only" />
+
+        <div class="results-tracker">
+            <span class="num-makes">0</span> | <span class="num-mistakes">0</span>
         </div>
-        <div class="setup-item">
-            <p>random</p>
-            <input type="checkbox" class="random" />
+
+        <div class="time-tracker">
+            <span class="average-key-time">0</span> ms
         </div>
-    </div>
 
-    <div class="results-tracker">
-        <span class="num-makes">0</span> | <span class="num-mistakes">0</span>
-    </div>
+        <div class="task"></div>
 
-    <div class="time-tracker">
-        <span class="average-key-time">0</span> ms
-    </div>
-
-    <div class="task"></div>
-
-    <script type="text/javascript" src="./script.js"></script>
-</body>
+        <script type="text/javascript" src="./script.js"></script>
+    </body>
 </html>
