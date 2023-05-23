@@ -51,7 +51,7 @@ const CHARS = [
     { value: '/', weight: 2 },
     { value: 'ArrowUp', weight: 1 },
     { value: 'Control', weight: 2 },
-    { value: 'Alt', weight: 20 },
+    { value: 'Alt', weight: 2 },
     { value: 'Meta', weight: 2 },
     { value: ' ', weight: 0 },
     { value: 'ArrowLeft', weight: 1 },
@@ -108,7 +108,8 @@ const CHARS = [
 
 const TRICKY_WORDS = [
     '= () => {',
-    'between'
+    'between',
+    'debt',
 ];
 
 const MIN_TASK_LENGTH = 1;
