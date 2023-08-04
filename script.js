@@ -106,12 +106,6 @@ const CHARS = [
     { value: '?', weight: 1 },
 ];
 
-const TRICKY_WORDS = [
-    '= () => {',
-    'between',
-    'debt',
-];
-
 const MIN_TASK_LENGTH = 1;
 const MAX_TASK_LENGTH = 12;
 
@@ -125,7 +119,7 @@ function pollDomElements() {
     const taskLengthInput = document.querySelector('.task-length');
     const isNumbersOnlyInput = document.querySelector('.numbers-only');
     const isRandomInput = document.querySelector('.random');
-    const isTrickyWords = document.querySelector('.tricky-words');
+    const trickyWordsInput = document.querySelector('.tricky-words');
     const averageKeyTimeElement = document.querySelector('.average-key-time');
 
     if (taskElement === null || makesElement === null || numMakesElement === null || numMistakesElement === null || taskLengthInput === null || averageKeyTimeElement === null) {
@@ -133,12 +127,12 @@ function pollDomElements() {
         return;
     }
 
-    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, isTrickyWords, averageKeyTimeElement);
+    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement);
 }
 
 pollDomElements();
 
-function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, isTrickyWords, averageKeyTimeElement) {
+function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement) {
     const currentTasks = [];
     let currentMakes = [];
 
@@ -201,8 +195,9 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
             isNumbersOnly = Math.random() < RANDOM_NUMBER_INPUT_CHANCE;
         }
 
-        if (isTrickyWords.checked) {
-            const trickyWord = TRICKY_WORDS[Math.floor(Math.random() * TRICKY_WORDS.length)];
+        if (trickyWordsInput.value.length > 0) {
+            const trickyWords = trickyWordsInput.value.split(', ');
+            const trickyWord = trickyWords[Math.floor(Math.random() * trickyWords.length)];
 
             for (let i = 0; i < trickyWord.length; i++) {
                 currentTasks.push(trickyWord[i]);
