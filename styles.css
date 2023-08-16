@@ -28,6 +28,16 @@ body {
     border: 1px solid var(--primary-color);
 }
 
+.words-collection {
+    position: absolute;
+    left: 50%;
+    bottom: var(--padding);
+    transform: translateX(-50%);
+    width: 75vw;
+    color: var(--secondary-color);
+    background-color: var(--bg-color);
+}
+
 /* left top */
 
 .title {

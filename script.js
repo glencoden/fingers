@@ -113,6 +113,7 @@ const RANDOM_NUMBER_INPUT_CHANCE = 1 / 4;
 
 function pollDomElements() {
     const taskElement = document.querySelector('.task');
+    const wordsCollectionInput = document.querySelector('.words-collection');
     const makesElement = document.querySelector('.makes');
     const numMakesElement = document.querySelector('.num-makes');
     const numMistakesElement = document.querySelector('.num-mistakes');
@@ -127,12 +128,12 @@ function pollDomElements() {
         return;
     }
 
-    runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement);
+    runScript(taskElement, wordsCollectionInput, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement);
 }
 
 pollDomElements();
 
-function runScript(taskElement, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement) {
+function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement) {
     const currentTasks = [];
     let currentMakes = [];
 
@@ -176,7 +177,7 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
         updateUI();
     }
 
-    function onMistake() {
+    function onMiss() {
         numMistakes++;
         numMistakesElement.innerHTML = `${numMistakes}`;
         currentMakes = [];
@@ -195,12 +196,12 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
             isNumbersOnly = Math.random() < RANDOM_NUMBER_INPUT_CHANCE;
         }
 
-        if (trickyWordsInput.value.length > 0) {
-            const trickyWords = trickyWordsInput.value.split(', ');
-            const trickyWord = trickyWords[Math.floor(Math.random() * trickyWords.length)];
+        if (trickyWordsInput.checked) {
+            const words = wordsCollectionInput.value.split(', ');
+            const word = words[Math.floor(Math.random() * words.length)];
 
-            for (let i = 0; i < trickyWord.length; i++) {
-                currentTasks.push(trickyWord[i]);
+            for (let i = 0; i < word.length; i++) {
+                currentTasks.push(word[i]);
             }
         } else {
             for (let i = 0; i < currentLength; i++) {
@@ -240,6 +241,10 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
     taskLengthInput.addEventListener('change', onTaskLengthChange);
 
     function onUserInputKeydown(event) {
+        if (event.target === wordsCollectionInput) {
+            return;
+        }
+
         event.preventDefault();
 
         if (currentTasks.length === 0) {
@@ -254,7 +259,7 @@ function runScript(taskElement, makesElement, numMakesElement, numMistakesElemen
         handleKeyTime();
 
         if (event.key !== currentTasks[0]) {
-            onMistake();
+            onMiss();
             return;
         }
 
