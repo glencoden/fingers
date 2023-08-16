@@ -139,7 +139,7 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
 
     wordsCollectionInput.value = Object.keys(trickyWords).map(key => atob(key)).join(', ');
 
-    const currentTasks = [];
+    let currentTasks = [];
     let currentMakes = [];
 
     let numMakes = 0;
@@ -206,6 +206,8 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
     }
 
     function resetTasks() {
+        currentTasks = []
+
         let currentLength = taskLengthInput.value;
         let isNumbersOnly = menuSelect.value === 'numbers';
 
@@ -389,6 +391,8 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
             taskLengthInput.classList.add('label-disabled');
             label.classList.add('label-disabled');
         }
+
+        resetTasks();
     });
 
     resetTaskLength();
