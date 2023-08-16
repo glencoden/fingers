@@ -134,6 +134,10 @@ function pollDomElements() {
 pollDomElements();
 
 function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement) {
+    const trickyWords = localStorage.getItem('TRICKY_WORDS') ? JSON.parse(localStorage.getItem('TRICKY_WORDS')) : {};
+
+    wordsCollectionInput.value = Object.keys(trickyWords).map(key => atob(key)).join(', ');
+
     const currentTasks = [];
     let currentMakes = [];
 
@@ -142,6 +146,9 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
 
     let keyTimes = [];
     let prevKeyDate = null;
+
+    let currentWord = null;
+    let currentWordKeyTimes = null;
 
     function handleKeyTime() {
         const currentKeyDate = new Date();
@@ -161,6 +168,14 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
         averageKeyTimeElement.innerHTML = `${averageKeyTime}`;
 
         prevKeyDate = currentKeyDate;
+
+        if (currentWord !== null) {
+            if (currentWordKeyTimes === null) {
+                currentWordKeyTimes = [];
+                return;
+            }
+            currentWordKeyTimes.push(timeSinceLastKey);
+        }
     }
 
     function onMake(key) {
@@ -183,6 +198,8 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
         currentMakes = [];
         keyTimes = [];
         prevKeyDate = null;
+        currentWord = null;
+        currentWordKeyTimes = null;
 
         updateUI();
     }
@@ -197,13 +214,74 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
         }
 
         if (trickyWordsInput.checked) {
-            const words = wordsCollectionInput.value.split(', ');
+            if (currentWord !== null && currentWordKeyTimes !== null && currentWord.length - 1 === currentWordKeyTimes.length) {
+                const totalKeyTime = currentWordKeyTimes.reduce((result, time) => result + time, 0);
+                const averageKeyTime = Math.round(totalKeyTime / currentWordKeyTimes.length);
+
+                const totalDeviation = currentWordKeyTimes.reduce((result, time) => result + Math.abs(time - averageKeyTime), 0);
+                const consistency = Math.round(((1 - totalDeviation / totalKeyTime)) * 100);
+
+                trickyWords[btoa(currentWord)] = `${averageKeyTime}-${consistency}`;
+
+                localStorage.setItem('TRICKY_WORDS', JSON.stringify(trickyWords));
+            }
+
+            const words = [];
+            const weights = [];
+
+            Object.values(trickyWords).forEach(value => {
+                const split = value.split('-');
+
+                const speed = parseInt(split[0]);
+                const consistency = parseInt(split[1]);
+
+                if (speed === 0 || consistency === 0) {
+                    weights.push(null);
+                    return;
+                }
+
+                const relativeWeight = speed / consistency;
+
+                weights.push(relativeWeight);
+            });
+
+            const smallestWeight = weights.reduce((result, current) => {
+                if (current === null) {
+                    return result;
+                }
+                if (result === null) {
+                    return current;
+                }
+                return Math.min(result, current);
+            }, null);
+
+            Object.keys(trickyWords).forEach((key, index) => {
+                const currentWeight = weights[index];
+
+                if (currentWeight === null || smallestWeight === null) {
+                    words.push(atob(key));
+                    return;
+                }
+
+                const resultWeight = Math.round(currentWeight / smallestWeight);
+
+                for (let i = 0; i < resultWeight; i++) {
+                    words.push(atob(key));
+                }
+            });
+
             const word = words[Math.floor(Math.random() * words.length)];
+
+            currentWord = word;
+            currentWordKeyTimes = null;
 
             for (let i = 0; i < word.length; i++) {
                 currentTasks.push(word[i]);
             }
         } else {
+            currentWord = null;
+            currentWordKeyTimes = null;
+
             for (let i = 0; i < currentLength; i++) {
                 const pickList = [];
 
@@ -266,7 +344,37 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
         onMake(event.key);
     }
 
+    function onWordsCollectionChange({ target }) {
+        const words = target.value
+            .split(', ')
+            .filter((e, i, a) => a.indexOf(e) === i);
+
+        words.forEach(word => {
+            const key = btoa(word);
+
+            if (trickyWords[key]) {
+                return;
+            }
+
+            trickyWords[key] = '0-0'; // speed in ms per letter - consistency in percent
+        });
+
+        Object.keys(trickyWords).forEach(key => {
+            if (words.indexOf(atob(key)) !== -1) {
+                return;
+            }
+
+            delete trickyWords[key];
+        });
+
+        localStorage.setItem('TRICKY_WORDS', JSON.stringify(trickyWords));
+
+        wordsCollectionInput.value = words.join(', ');
+    }
+
     document.addEventListener('keydown', onUserInputKeydown);
+
+    wordsCollectionInput.addEventListener('change', onWordsCollectionChange);
 
     resetTaskLength();
     resetTasks();
