@@ -84,6 +84,10 @@ body {
     background-color: var(--bg-color);
 }
 
+.task-length, .task-length-label.task-length-label-disabled {
+    color: var(--secondary-color);
+}
+
 /* left bottom */
 
 .results-tracker {

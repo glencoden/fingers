@@ -117,10 +117,11 @@ function pollDomElements() {
     const makesElement = document.querySelector('.makes');
     const numMakesElement = document.querySelector('.num-makes');
     const numMistakesElement = document.querySelector('.num-mistakes');
+    const menuSelect = document.querySelector('.menu');
     const taskLengthInput = document.querySelector('.task-length');
-    const isNumbersOnlyInput = document.querySelector('.numbers-only');
-    const isRandomInput = document.querySelector('.random');
-    const trickyWordsInput = document.querySelector('.tricky-words');
+    // const isNumbersOnlyInput = document.querySelector('.numbers-only');
+    // const isRandomInput = document.querySelector('.random');
+    // const trickyWordsInput = document.querySelector('.tricky-words');
     const averageKeyTimeElement = document.querySelector('.average-key-time');
 
     if (taskElement === null || makesElement === null || numMakesElement === null || numMistakesElement === null || taskLengthInput === null || averageKeyTimeElement === null) {
@@ -128,12 +129,12 @@ function pollDomElements() {
         return;
     }
 
-    runScript(taskElement, wordsCollectionInput, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement);
+    runScript(taskElement, wordsCollectionInput, makesElement, numMakesElement, numMistakesElement, menuSelect, taskLengthInput, averageKeyTimeElement);
 }
 
 pollDomElements();
 
-function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElement, numMistakesElement, taskLengthInput, isNumbersOnlyInput, isRandomInput, trickyWordsInput, averageKeyTimeElement) {
+function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElement, numMistakesElement, menuSelect, taskLengthInput, averageKeyTimeElement) {
     const trickyWords = localStorage.getItem('TRICKY_WORDS') ? JSON.parse(localStorage.getItem('TRICKY_WORDS')) : {};
 
     wordsCollectionInput.value = Object.keys(trickyWords).map(key => atob(key)).join(', ');
@@ -206,14 +207,14 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
 
     function resetTasks() {
         let currentLength = taskLengthInput.value;
-        let isNumbersOnly = isNumbersOnlyInput.checked;
+        let isNumbersOnly = menuSelect.value === 'numbers';
 
-        if (isRandomInput.checked) {
+        if (menuSelect.value === 'random') {
             currentLength = Math.ceil(Math.random() * MAX_TASK_LENGTH);
             isNumbersOnly = Math.random() < RANDOM_NUMBER_INPUT_CHANCE;
         }
 
-        if (trickyWordsInput.checked) {
+        if (menuSelect.value === 'words') {
             if (currentWord !== null && currentWordKeyTimes !== null && currentWord.length - 1 === currentWordKeyTimes.length) {
                 const totalKeyTime = currentWordKeyTimes.reduce((result, time) => result + time, 0);
                 const averageKeyTime = Math.round(totalKeyTime / currentWordKeyTimes.length);
@@ -375,6 +376,18 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
     document.addEventListener('keydown', onUserInputKeydown);
 
     wordsCollectionInput.addEventListener('change', onWordsCollectionChange);
+
+    menuSelect.addEventListener('change', ({ target }) => {
+        const label = document.querySelector('.task-length-label');
+
+        if (target.value === 'default' || target.value === 'numbers') {
+            taskLengthInput.disabled = false;
+            label.classList.remove('task-length-label-disabled');
+        } else {
+            taskLengthInput.disabled = true;
+            label.classList.add('task-length-label-disabled');
+        }
+    });
 
     resetTaskLength();
     resetTasks();
