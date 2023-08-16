@@ -382,10 +382,12 @@ function runScript(taskElement, wordsCollectionInput, makesElement, numMakesElem
 
         if (target.value === 'default' || target.value === 'numbers') {
             taskLengthInput.disabled = false;
-            label.classList.remove('task-length-label-disabled');
+            taskLengthInput.classList.remove('label-disabled');
+            label.classList.remove('label-disabled');
         } else {
             taskLengthInput.disabled = true;
-            label.classList.add('task-length-label-disabled');
+            taskLengthInput.classList.add('label-disabled');
+            label.classList.add('label-disabled');
         }
     });
 

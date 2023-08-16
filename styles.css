@@ -63,7 +63,7 @@ body {
     right: var(--padding);
     top: var(--padding);
     display: flex;
-    width: 550px;
+    /*width: 550px;*/
 }
 
 .setup-item {
@@ -84,7 +84,7 @@ body {
     background-color: var(--bg-color);
 }
 
-.task-length, .task-length-label.task-length-label-disabled {
+.task-length.label-disabled, .task-length-label.label-disabled {
     color: var(--secondary-color);
 }
 
